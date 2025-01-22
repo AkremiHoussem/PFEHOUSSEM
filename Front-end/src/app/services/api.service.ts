@@ -9,7 +9,7 @@ import { Appointment } from '../models/appointment';
   providedIn: 'root'
 })
 export class ApiService {
-  private baseUrl = 'http://localhost:8080/api';
+  private baseUrl = 'http://localhost:8083/api';
 
   constructor(private http: HttpClient) {}
 
@@ -33,6 +33,14 @@ export class ApiService {
 
   getDoctor(id: number): Observable<Doctor> {
     return this.http.get<Doctor>(`${this.baseUrl}/doctors/${id}`);
+  }
+
+  createDoctor(doctor: Doctor): Observable<Doctor> {
+    return this.http.post<Doctor>(`${this.baseUrl}/doctors`, doctor);
+  }
+
+  deleteDoctor(id: number): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/doctors/${id}`);
   }
 
   // Appointment endpoints
