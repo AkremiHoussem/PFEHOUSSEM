@@ -1,0 +1,79 @@
+<div class="container">
+    <h2>{{ isEditing ? 'Edit Doctor' : 'Add New Doctor' }}</h2>
+
+    <div *ngIf="error" class="alert alert-danger">
+        {{ error }}
+    </div>
+
+    <form (ngSubmit)="onSubmit()" #doctorForm="ngForm">
+        <div class="form-group">
+            <label for="firstName">First Name</label>
+            <input type="text" class="form-control" id="firstName"
+                   [(ngModel)]="newDoctor.firstName" name="firstName" required>
+        </div>
+
+        <div class="form-group">
+            <label for="lastName">Last Name</label>
+            <input type="text" class="form-control" id="lastName"
+                   [(ngModel)]="newDoctor.lastName" name="lastName" required>
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" class="form-control" id="email"
+                   [(ngModel)]="newDoctor.email" name="email" required>
+        </div>
+
+        <div class="form-group">
+            <label for="phone">Phone</label>
+            <input type="tel" class="form-control" id="phone"
+                   [(ngModel)]="newDoctor.phone" name="phone" required>
+        </div>
+
+        <div class="form-group">
+            <label for="specialization">Specialization</label>
+            <input type="text" class="form-control" id="specialization"
+                   [(ngModel)]="newDoctor.specialization" name="specialization" required>
+        </div>
+
+        <div class="form-group">
+            <label for="qualification">Qualification</label>
+            <input type="text" class="form-control" id="qualification"
+                   [(ngModel)]="newDoctor.qualification" name="qualification">
+        </div>
+
+        <div class="form-group">
+            <label for="experience">Experience (years)</label>
+            <input type="number" class="form-control" id="experience"
+                   [(ngModel)]="newDoctor.experience" name="experience">
+        </div>
+
+        <button type="submit" class="btn btn-primary">{{ isEditing ? 'Update' : 'Add' }} Doctor</button>
+        <button type="button" class="btn btn-secondary" (click)="resetForm()">Cancel</button>
+    </form>
+
+    <h3 class="mt-4">Doctors List</h3>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Specialization</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let doctor of doctors">
+            <td>{{ doctor.firstName }} {{ doctor.lastName }}</td>
+            <td>{{ doctor.email }}</td>
+            <td>{{ doctor.phone }}</td>
+            <td>{{ doctor.specialization }}</td>
+            <td>
+                <button class="btn btn-sm btn-primary mr-2" (click)="editDoctor(doctor)">Edit</button>
+                <button class="btn btn-sm btn-danger" (click)="deleteDoctor(doctor.id)">Delete</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>

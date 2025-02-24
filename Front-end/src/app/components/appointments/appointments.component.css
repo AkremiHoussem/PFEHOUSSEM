@@ -1,0 +1,29 @@
+.container {
+    padding: 20px;
+}
+
+.card {
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.card-header {
+    background-color: #f8f9fa;
+    font-weight: bold;
+}
+
+.table {
+    margin-bottom: 0;
+}
+
+.btn-primary {
+    margin-top: 10px;
+}
+
+.form-control {
+    margin-bottom: 10px;
+}
+
+label {
+    font-weight: 500;
+}
