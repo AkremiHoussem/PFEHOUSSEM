@@ -1,8 +1,8 @@
 package com.bmt.dashboard.pfe.Entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
-
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
@@ -15,6 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @Table(name = "patients")
 public class Patient {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,10 +28,8 @@ public class Patient {
     private Date dateOfBirth;
     private String gender;
 
-    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
+    // One patient can have many appointments
+    @JsonManagedReference
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Appointment> appointments;
-
-    // Getters and Setters
-    // Constructor
-    // toString method
 }

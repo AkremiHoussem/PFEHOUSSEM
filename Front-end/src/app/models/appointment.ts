@@ -3,6 +3,6 @@ export interface Appointment {
   patientId: number;
   doctorId: number;
   dateTime: Date;
-  status: string;
+  status: 'Scheduled' | 'Completed' | 'Cancelled';
   notes: string;
 }
