@@ -5,6 +5,7 @@ import { Appointment } from '../../models/appointment';
 import { Doctor } from '../../models/doctor';
 import { Patient } from '../../models/patient';
 import { ApiService } from '../../services/api.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-appointments',
@@ -17,7 +18,7 @@ export class AppointmentsComponent implements OnInit {
   appointments: Appointment[] = [];
   doctors: Doctor[] = [];
   patients: Patient[] = [];
-  newAppointment: Appointment = this.initializeNewAppointment();
+  newAppointment: Partial<Appointment> = this.initializeNewAppointment();
   loading = false;
   error = '';
   isEditing = false;
@@ -29,84 +30,48 @@ export class AppointmentsComponent implements OnInit {
     this.loadInitialData();
   }
 
-  private initializeNewAppointment(): Appointment {
+  private initializeNewAppointment(): Partial<Appointment> {
     return {
-      patientId: 0,
-      doctorId: 0,
-      dateTime: new Date(),
-      status: 'Scheduled',
-      notes: ''
+      patientId: null,  // Make sure this matches the type expected by Appointment
+      doctorId: null,   // Make sure this matches the type expected by Appointment
+      appointmentDate: '', // Empty string for date
+      appointmentTime: '', // Empty string for time
+      description: ''      // Empty string for description
     };
   }
 
   private loadInitialData() {
     this.loading = true;
-    Promise.all([
-      this.loadAppointments(),
-      this.loadDoctors(),
-      this.loadPatients()
-    ]).finally(() => {
-      this.loading = false;
-    });
-  }
 
-  private loadAppointments() {
-    return new Promise((resolve) => {
-      this.apiService.getAppointments().subscribe({
-        next: (data) => {
-          this.appointments = data;
-          resolve(true);
-        },
-        error: (error) => {
-          this.error = 'Error loading appointments';
-          console.error(error);
-          resolve(false);
-        }
-      });
-    });
-  }
-
-  private loadDoctors() {
-    return new Promise((resolve) => {
-      this.apiService.getDoctors().subscribe({
-        next: (data) => {
-          this.doctors = data;
-          resolve(true);
-        },
-        error: (error) => {
-          this.error = 'Error loading doctors';
-          console.error(error);
-          resolve(false);
-        }
-      });
-    });
-  }
-
-  private loadPatients() {
-    return new Promise((resolve) => {
-      this.apiService.getPatients().subscribe({
-        next: (data) => {
-          this.patients = data;
-          resolve(true);
-        },
-        error: (error) => {
-          this.error = 'Error loading patients';
-          console.error(error);
-          resolve(false);
-        }
-      });
+    forkJoin({
+      appointments: this.apiService.getAppointments(),
+      doctors: this.apiService.getDoctors(),
+      patients: this.apiService.getPatients()
+    }).subscribe({
+      next: ({ appointments, doctors, patients }) => {
+        this.appointments = appointments;
+        this.doctors = doctors;
+        this.patients = patients;
+        this.loading = false;
+      },
+      error: (error) => {
+        this.error = 'Error loading data';
+        console.error(error);
+        this.loading = false;
+      }
     });
   }
 
   onSubmit() {
     if (this.validateAppointment()) {
       this.loading = true;
+
       if (this.isEditing && this.selectedAppointment?.id) {
-        this.apiService.updateAppointment(this.selectedAppointment.id, this.newAppointment).subscribe({
+        this.apiService.updateAppointment(this.selectedAppointment.id, this.newAppointment as Appointment).subscribe({
           next: () => {
-            this.loadAppointments();
+            alert('Appointment updated successfully!');
+            this.loadInitialData();
             this.resetForm();
-            this.loading = false;
           },
           error: (error) => {
             this.error = 'Error updating appointment';
@@ -115,11 +80,11 @@ export class AppointmentsComponent implements OnInit {
           }
         });
       } else {
-        this.apiService.createAppointment(this.newAppointment).subscribe({
+        this.apiService.createAppointment(this.newAppointment as Appointment).subscribe({
           next: () => {
-            this.loadAppointments();
+            alert('Appointment created successfully!');
+            this.loadInitialData();
             this.resetForm();
-            this.loading = false;
           },
           error: (error) => {
             this.error = 'Error creating appointment';
@@ -131,55 +96,64 @@ export class AppointmentsComponent implements OnInit {
     }
   }
 
-  private validateAppointment(): boolean {
-    if (this.newAppointment.patientId === 0) {
-      this.error = 'Please select a patient';
-      return false;
-    }
-    if (this.newAppointment.doctorId === 0) {
-      this.error = 'Please select a doctor';
-      return false;
-    }
-    return true;
-  }
-
-  editAppointment(appointment: Appointment) {
-    this.isEditing = true;
-    this.selectedAppointment = appointment;
-    this.newAppointment = { ...appointment };
-  }
-
   resetForm() {
     this.newAppointment = this.initializeNewAppointment();
     this.isEditing = false;
     this.selectedAppointment = null;
-    this.error = '';
+  }
+
+  getPatientName(patientId: number | null): string {
+    const patient = this.patients.find(p => p.id === patientId);
+    return patient ? `${patient.firstName} ${patient.lastName}` : 'Unknown';
+  }
+
+  getDoctorName(doctorId: number | null): string {
+    const doctor = this.doctors.find(d => d.id === doctorId);
+    return doctor ? `Dr. ${doctor.firstName} ${doctor.lastName}` : 'Unknown';
+  }
+
+  formatTime(time: string | undefined): string {
+    if (!time) return '';
+    return new Date(`1970-01-01T${time}`).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+
+  editAppointment(appointment: Appointment) {
+    this.newAppointment = { ...appointment };
+    this.isEditing = true;
+    this.selectedAppointment = appointment;
   }
 
   deleteAppointment(id: number | undefined) {
-    if (id && confirm('Are you sure you want to delete this appointment?')) {
-      this.loading = true;
+    if (id === undefined) {
+      console.error('Cannot delete appointment: ID is undefined');
+      return;
+    }
+
+    if (confirm('Are you sure you want to delete this appointment?')) {
       this.apiService.deleteAppointment(id).subscribe({
         next: () => {
-          this.loadAppointments();
-          this.loading = false;
+          alert('Appointment deleted successfully!');
+          this.loadInitialData();
         },
         error: (error) => {
           this.error = 'Error deleting appointment';
           console.error(error);
-          this.loading = false;
         }
       });
     }
   }
 
-  getDoctorName(doctorId: number): string {
-    const doctor = this.doctors.find(d => d.id === doctorId);
-    return doctor ? `Dr. ${doctor.firstName} ${doctor.lastName}` : 'Unknown Doctor';
-  }
-
-  getPatientName(patientId: number): string {
-    const patient = this.patients.find(p => p.id === patientId);
-    return patient ? `${patient.firstName} ${patient.lastName}` : 'Unknown Patient';
+  private validateAppointment(): boolean {
+    if (
+        this.newAppointment.patientId === null ||
+        this.newAppointment.doctorId === null ||
+        !this.newAppointment.appointmentDate ||
+        !this.newAppointment.appointmentTime
+    ) {
+      this.error = 'Please fill in all required fields.';
+      console.error('Validation error:', this.newAppointment);
+      return false;
+    }
+    return true;
   }
 }

@@ -1,11 +1,10 @@
 package com.bmt.dashboard.pfe.Entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
@@ -14,7 +13,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "doctors")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Doctor {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,15 +31,14 @@ public class Doctor {
     private String email;
 
     private String phone;
-
     private String specialization;
-
     private String qualification;
-
     private Integer experience;
 
     // One doctor can have many appointments
-    @JsonIgnore  // Avoid circular reference during JSON serialization
     @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore // Évite la boucle infinie lors de la sérialisation
+    @ToString.Exclude // Évite la récursion infinie avec Lombok
+    @EqualsAndHashCode.Exclude
     private List<Appointment> appointments;
 }

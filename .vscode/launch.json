@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-DashboardPfeApplication<dashboard-pfe>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.bmt.dashboard.pfe.DashboardPfeApplication",
+            "projectName": "dashboard-pfe",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

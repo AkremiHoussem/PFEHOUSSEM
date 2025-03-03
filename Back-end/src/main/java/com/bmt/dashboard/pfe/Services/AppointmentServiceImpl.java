@@ -7,8 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Date;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -23,56 +24,42 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public List<Appointment> findAll() {
-        try {
-            return appointmentRepository.findAll();
-        } catch (Exception e) {
-            throw new RuntimeException("Error fetching appointments: " + e.getMessage());
-        }
+        return appointmentRepository.findAll();
     }
 
     @Override
-    public Appointment findById(Long id) {
-        return appointmentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Appointment not found with id: " + id));
+    public Optional<Appointment> findById(Long id) {
+        return appointmentRepository.findById(id);
     }
 
     @Override
     public Appointment save(Appointment appointment) {
-        try {
-            validateAppointment(appointment);
-            return appointmentRepository.save(appointment);
-        } catch (Exception e) {
-            throw new RuntimeException("Error saving appointment: " + e.getMessage());
-        }
+        validateAppointment(appointment); // Validate patient and doctor
+        return appointmentRepository.save(appointment);
     }
 
     @Override
     public Appointment update(Long id, Appointment appointmentDetails) {
-        try {
-            Appointment appointment = findById(id);
-            validateAppointment(appointmentDetails);
+        Appointment appointment = findById(id)
+                .orElseThrow(() -> new RuntimeException("Appointment not found with id: " + id));
 
-            appointment.setPatient(appointmentDetails.getPatient());
-            appointment.setDoctor(appointmentDetails.getDoctor());
-            appointment.setAppointmentDate(appointmentDetails.getAppointmentDate());
-            appointment.setAppointmentTime(appointmentDetails.getAppointmentTime());
-            appointment.setStatus(appointmentDetails.getStatus());
-            appointment.setDescription(appointmentDetails.getDescription());
+        validateAppointment(appointmentDetails); // Validate patient and doctor
 
-            return appointmentRepository.save(appointment);
-        } catch (Exception e) {
-            throw new RuntimeException("Error updating appointment: " + e.getMessage());
-        }
+        appointment.setPatient(appointmentDetails.getPatient());
+        appointment.setDoctor(appointmentDetails.getDoctor());
+        appointment.setAppointmentDate(appointmentDetails.getAppointmentDate());
+        appointment.setAppointmentTime(appointmentDetails.getAppointmentTime());
+        appointment.setDescription(appointmentDetails.getDescription());
+
+        return appointmentRepository.save(appointment);
     }
 
     @Override
     public void delete(Long id) {
-        try {
-            Appointment appointment = findById(id);
-            appointmentRepository.delete(appointment);
-        } catch (Exception e) {
-            throw new RuntimeException("Error deleting appointment: " + e.getMessage());
-        }
+        Appointment appointment = findById(id)
+                .orElseThrow(() -> new RuntimeException("Appointment not found with id: " + id));
+
+        appointmentRepository.delete(appointment);
     }
 
     @Override
@@ -86,12 +73,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<Appointment> findByStatus(String status) {
-        return appointmentRepository.findByStatus(status);
-    }
-
-    @Override
-    public List<Appointment> findByAppointmentDate(Date date) {
+    public List<Appointment> findByAppointmentDate(LocalDate date) {
         return appointmentRepository.findByAppointmentDate(date);
     }
 
@@ -104,9 +86,6 @@ public class AppointmentServiceImpl implements AppointmentService {
         }
         if (appointment.getAppointmentDate() == null) {
             throw new RuntimeException("Appointment date is required");
-        }
-        if (appointment.getStatus() == null || appointment.getStatus().trim().isEmpty()) {
-            appointment.setStatus("SCHEDULED");
         }
     }
 }

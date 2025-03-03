@@ -7,7 +7,7 @@ import { ApiService } from '../../services/api.service';
 @Component({
   selector: 'app-patients',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule], // ✅ Correction ici
   templateUrl: './patients.component.html'
 })
 export class PatientsComponent {
@@ -15,9 +15,9 @@ export class PatientsComponent {
   newPatient: Patient = {
     firstName: '',
     lastName: '',
-    dateOfBirth: new Date(),
+    dateOfBirth: '',
     gender: '',
-    phoneNumber: '',
+    phone: '',
     email: '',
     address: ''
   };
@@ -28,13 +28,17 @@ export class PatientsComponent {
 
   loadPatients() {
     this.apiService.getPatients().subscribe({
-      next: (data) => {
-        // Flatten the response if appointments are causing issues
-        this.patients = data.map((patient: any) => {
-          // Extract only patient-related data
-          const { id, firstName, lastName, dateOfBirth, gender, email, phoneNumber, address } = patient;
-          return { id, firstName, lastName, dateOfBirth, gender, email, phoneNumber, address };
-        });
+      next: (data: any[]) => {
+        this.patients = data.map((patient: any) => ({
+          id: patient.id,
+          firstName: patient.firstName,
+          lastName: patient.lastName,
+          dateOfBirth: patient.dateOfBirth,
+          gender: patient.gender,
+          email: patient.email,
+          phone: patient.phone,
+          address: patient.address
+        }));
       },
       error: (error) => {
         console.error('Error loading patients:', error);
@@ -43,24 +47,38 @@ export class PatientsComponent {
   }
 
   onSubmit() {
-    this.apiService.createPatient(this.newPatient).subscribe({
+    const formattedPatient: Patient = {
+      ...this.newPatient,
+      dateOfBirth: this.formatDate(this.newPatient.dateOfBirth)
+    };
+
+    this.apiService.createPatient(formattedPatient).subscribe({
       next: (response) => {
         console.log('Patient created successfully:', response);
         this.loadPatients();
-        // Reset form
-        this.newPatient = {
-          firstName: '',
-          lastName: '',
-          dateOfBirth: new Date(),
-          gender: '',
-          phoneNumber: '',
-          email: '',
-          address: ''
-        };
+        this.resetForm();
       },
       error: (error) => {
         console.error('Error creating patient:', error);
       }
     });
+  }
+
+  formatDate(date: any): string {
+    if (!date) return '';
+    const d = new Date(date);
+    return d.toISOString().split('T')[0];
+  }
+
+  resetForm() {
+    this.newPatient = {
+      firstName: '',
+      lastName: '',
+      dateOfBirth: '',
+      gender: '',
+      phone: '',
+      email: '',
+      address: ''
+    };
   }
 }

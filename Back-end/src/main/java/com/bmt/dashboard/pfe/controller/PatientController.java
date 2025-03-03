@@ -9,67 +9,38 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/api/patients")
-@CrossOrigin(origins = "*")
 public class PatientController {
-
-    private final PatientService patientService;
-
+    
     @Autowired
-    public PatientController(PatientService patientService) {
-        this.patientService = patientService;
-    }
+    private PatientService patientService;
 
     @GetMapping
     public ResponseEntity<List<Patient>> getAllPatients() {
-        try {
-            List<Patient> patients = patientService.getAllPatients();
-            if (patients == null || patients.isEmpty()) {
-                return ResponseEntity.noContent().build();
-            }
-            return ResponseEntity.ok(patients);
-        } catch (Exception e) {
-            e.printStackTrace(); // Logs the exception
-            return ResponseEntity.status(500).body(null);
-        }
+        return ResponseEntity.ok(patientService.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Patient> getPatientById(@PathVariable Long id) {
-        try {
-            return patientService.getPatientById(id)
-                    .map(ResponseEntity::ok)
-                    .orElse(ResponseEntity.notFound().build());
-        } catch (Exception e) {
-            return ResponseEntity.status(500).build();
-        }
+    public ResponseEntity<?> getPatientById(@PathVariable Long id) {
+        return patientService.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
     public ResponseEntity<Patient> createPatient(@RequestBody Patient patient) {
-        try {
-            return ResponseEntity.ok(patientService.createPatient(patient));
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body(null);
-        }
+        return ResponseEntity.ok(patientService.save(patient));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Patient> updatePatient(@PathVariable Long id, @RequestBody Patient patientDetails) {
-        try {
-            return ResponseEntity.ok(patientService.updatePatient(id, patientDetails));
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body(null);
-        }
+    public ResponseEntity<Patient> updatePatient(@PathVariable Long id, @RequestBody Patient patient) {
+        return ResponseEntity.ok(patientService.update(id, patient));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePatient(@PathVariable Long id) {
-        try {
-            patientService.deletePatient(id);
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            return ResponseEntity.status(500).build();
-        }
+        patientService.delete(id);
+        return ResponseEntity.ok().build();
     }
 }

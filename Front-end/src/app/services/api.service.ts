@@ -12,9 +12,10 @@ import { Appointment } from '../models/appointment';
 export class ApiService {
   private baseUrl = 'http://localhost:8083/api';
   private httpOptions = {
-    headers: new HttpHeaders()
-        .set('Content-Type', 'application/json')
-        .set('Accept', 'application/json')
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    })
   };
 
 
@@ -87,6 +88,7 @@ export class ApiService {
   }
 
   createAppointment(appointment: Appointment): Observable<Appointment> {
+    console.log('Sending appointment:', appointment); // Debugging
     return this.http.post<Appointment>(`${this.baseUrl}/appointments`, appointment, this.httpOptions).pipe(
         tap(response => console.log('Created appointment:', response)),
         catchError(error => this.handleError(error))

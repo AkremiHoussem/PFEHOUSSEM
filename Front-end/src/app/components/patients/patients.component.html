@@ -5,7 +5,7 @@
     <div class="card mb-4">
         <div class="card-header">Add New Patient</div>
         <div class="card-body">
-            <form (ngSubmit)="onSubmit()">
+            <form (ngSubmit)="onSubmit()" #form="ngForm">
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="firstName">First Name</label>
@@ -37,18 +37,15 @@
                         <input type="email" class="form-control" id="email" [(ngModel)]="newPatient.email" name="email" required>
                     </div>
                     <div class="col-md-6 mb-3">
-                        <label for="phoneNumber">Phone Number</label>
-                        <input type="tel" class="form-control" id="phoneNumber" [(ngModel)]="newPatient.phoneNumber" name="phoneNumber" required>
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" class="form-control" id="phone" [(ngModel)]="newPatient.phone" name="phone" required>
                     </div>
                 </div>
                 <div class="mb-3">
                     <label for="address">Address</label>
                     <textarea class="form-control" id="address" [(ngModel)]="newPatient.address" name="address" required></textarea>
                 </div>
-                <form (ngSubmit)="onSubmit()" #form="ngForm">
-                    <!-- form fields -->
-                    <button type="submit" [disabled]="!form.valid">Submit</button>
-                </form>
+                <button type="submit" class="btn btn-primary" [disabled]="!form.valid">Submit</button>
             </form>
         </div>
     </div>
@@ -74,7 +71,7 @@
                     <td>{{patient.dateOfBirth | date}}</td>
                     <td>{{patient.gender}}</td>
                     <td>{{patient.email}}</td>
-                    <td>{{patient.phoneNumber}}</td>
+                    <td>{{patient.phone}}</td>
                     <td>{{patient.address}}</td>
                 </tr>
                 </tbody>
