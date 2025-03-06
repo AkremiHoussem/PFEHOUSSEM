@@ -1,0 +1,44 @@
+<div class="card direct-chat direct-chat-primary">
+    <div class="card-header">
+        <h3 class="card-title">Direct Chat</h3>
+        <div class="card-tools">
+            <span class="badge badge-primary">3</span>
+            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                <i class="fas fa-minus"></i>
+            </button>
+            <button type="button" class="btn btn-tool" data-widget="chat-pane-toggle">
+                <i class="fas fa-comments"></i>
+            </button>
+            <button type="button" class="btn btn-tool" data-card-widget="remove">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <div class="direct-chat-messages">
+            <div *ngFor="let message of messages"
+                 [ngClass]="{'direct-chat-msg': true, 'right': message.sender === 'me'}">
+                <div class="direct-chat-infos clearfix">
+                    <span class="direct-chat-name float-left" *ngIf="message.sender !== 'me'">{{ message.sender }}</span>
+                    <span class="direct-chat-name float-right" *ngIf="message.sender === 'me'">You</span>
+                    <span class="direct-chat-timestamp float-right">{{ message.time }}</span>
+                </div>
+
+                <img class="direct-chat-img" [src]="message.avatar" alt="User Image">
+                <div class="direct-chat-text">{{ message.text }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-footer">
+        <form (submit)="sendMessage()">
+            <div class="input-group">
+                <input type="text" [(ngModel)]="newMessage" placeholder="Type Message ..." class="form-control">
+                <span class="input-group-append">
+                    <button type="submit" class="btn btn-primary">Send</button>
+                </span>
+            </div>
+        </form>
+    </div>
+</div>

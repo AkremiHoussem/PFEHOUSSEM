@@ -1,0 +1,22 @@
+.direct-chat-messages {
+    height: 300px;
+    overflow-y: scroll;
+}
+
+.direct-chat-text {
+    background: #f1f1f1;
+    border-radius: 10px;
+    padding: 10px;
+    margin: 5px;
+}
+
+.direct-chat-msg.right .direct-chat-text {
+    background: #007bff;
+    color: #fff;
+}
+
+.direct-chat-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
