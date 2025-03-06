@@ -8,5 +8,8 @@ import { Component } from '@angular/core';
   styleUrl: './sidebar.component.css'
 })
 export class SidebarComponent {
+  toggleDarkMode() {
+    document.body.classList.toggle('dark-mode');
+  }
 
 }

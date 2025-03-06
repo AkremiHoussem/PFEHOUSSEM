@@ -1,5 +1,19 @@
+<div class="brand-container text-center">
+
+    <h4 class="dashboard-title">My Dashboard</h4>
+
+    <div class="user-info">
+        <img src="assets/user-avatar.png" alt="User Avatar" class="user-avatar">
+        <p class="user-name"><a routerLink="/profile">John Doe</a></p>
+    </div>
+</div>
 <div class="sidebar">
+
+
+    <button (click)="toggleDarkMode()" class="btn btn-dark">🌙 Toggle Dark Mode</button>
+
     <ul>
+
         <li><a routerLink="/dashboard">Dashboard</a></li>
         <li><a routerLink="/patients">Patients</a></li>
         <li><a routerLink="/doctors">Doctors</a></li>

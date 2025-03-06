@@ -1,1 +1,99 @@
-<p>Houcem</p>
+<div class="content-wrapper">
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Hospital Management System</h1>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="content">
+        <div class="container-fluid">
+            <!-- Small Boxes Section -->
+            <div class="row">
+                <div class="col-3">
+                    <div class="small-box bg-info">
+                        <div class="inner">
+                            <h3>150</h3>
+                            <p>New Appointments</p>
+                        </div>
+                        <div class="icon"><i class="fas fa-shopping-cart"></i></div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="small-box bg-success">
+                        <div class="inner">
+                            <h3>53<sup style="font-size: 20px">%</sup></h3>
+                            <p>Bounce Rate</p>
+                        </div>
+                        <div class="icon"><i class="fas fa-chart-pie"></i></div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="small-box bg-warning">
+                        <div class="inner">
+                            <h3>44</h3>
+                            <p>Patients Registrations</p>
+                        </div>
+                        <div class="icon"><i class="fas fa-user-plus"></i></div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="small-box bg-danger">
+                        <div class="inner">
+                            <h3>65</h3>
+                            <p>Doctors</p>
+                        </div>
+                        <div class="icon"><i class="fas fa-chart-bar"></i></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts & Chat Section -->
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Appointments</h3>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="salesChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ensure chat is inside a valid column -->
+
+            </div>
+
+            <hr>
+
+            <!-- Map & Calendar Section -->
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Hospitals in Tunisia</h3>
+                        </div>
+                        <div class="card-body map-container">
+                            <app-map></app-map>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Appointments Calendar</h3>
+                        </div>
+                        <div class="card-body">
+                            <app-calendar></app-calendar>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

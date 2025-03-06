@@ -26,7 +26,10 @@
             }
           },
           "options": {
-            "assets": [],
+            "assets": [
+              "src/favicon.ico",
+              "src/assets"
+            ],
             "index": "src/index.html",
             "browser": "src/main.ts",
             "outputPath": "dist/demo",
@@ -34,11 +37,19 @@
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",
               "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
-              "node_modules/admin-lte/dist/js/adminlte.min.js"
+              "node_modules/admin-lte/dist/js/adminlte.min.js",
+              "node_modules/leaflet/dist/leaflet.js",
+              "src/assets/novena/plugins/jquery/jquery.js",
+              "src/assets/novena/plugins/bootstrap/js/bootstrap.js",
+              "src/assets/novena/js/script.js",
+              "src/assets/novena/js/contact.js"
             ],
             "styles": [
-              "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "node_modules/admin-lte/dist/css/adminlte.min.css",
+              "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
+              "node_modules/leaflet/dist/leaflet.css",
+              "src/assets/novena/css/style.css",
               "src/styles.css"
             ],
             "tsConfig": "tsconfig.app.json"
